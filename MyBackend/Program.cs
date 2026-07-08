@@ -38,21 +38,16 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+// Configure the HTTP request pipeline (Always enable Swagger UI for this testing project).
+app.MapOpenApi();
+app.UseSwaggerUI(options =>
 {
-    app.MapOpenApi();
-    app.UseSwaggerUI(options =>
-    {
-        options.SwaggerEndpoint("/openapi/v1.json", "My API v1");
-        options.RoutePrefix = "swagger"; // Swagger UI will be at /swagger/index.html
-    });
-}
+    options.SwaggerEndpoint("/openapi/v1.json", "My API v1");
+    options.RoutePrefix = "swagger"; // Swagger UI will be at /swagger/index.html
+});
 
 // Enable CORS policy
 app.UseCors("AllowAll");
-
-app.UseHttpsRedirection();
 
 // --- Todo CRUD Endpoints ---
 
