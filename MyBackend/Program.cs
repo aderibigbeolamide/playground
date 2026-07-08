@@ -1,9 +1,18 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddOpenApi();
+
+// Configure Forwarded Headers to respect reverse proxy headers (like Traefik in Dokploy)
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    options.KnownIPNetworks.Clear();
+    options.KnownProxies.Clear();
+});
 
 // Configure MySQL database connection using Pomelo
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -22,6 +31,9 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+// Must be called early to correct request properties (scheme/host) based on proxy headers
+app.UseForwardedHeaders();
 
 // Automatically create database and tables on startup if they don't exist
 using (var scope = app.Services.CreateScope())
