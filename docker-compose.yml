@@ -1,0 +1,29 @@
+services:
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: todo_db
+      MYSQL_USER: app_user
+      MYSQL_PASSWORD: apppassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  backend:
+    build:
+      context: ./MyBackend
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "5234:5234"
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=db;Database=todo_db;User=app_user;Password=apppassword;
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      - db
+
+volumes:
+  mysql_data:
