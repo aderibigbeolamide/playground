@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlow | Premium Monolithic Task Manager</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="app.css">
+</head>
+<body>
+    <div class="glass-bg"></div>
+    
+    <div class="app-container">
+        <!-- Header Section -->
+        <header class="app-header animate-fade-in">
+            <div class="header-logo">
+                <div class="logo-icon">
+                    <i data-lucide="check-square"></i>
+                </div>
+                <div>
+                    <h1>TaskFlow</h1>
+                    <p class="subtitle">Monolithic Testing Portal</p>
+                </div>
+            </div>
+            
+            <div class="header-actions">
+                <a href="/swagger/index.html" target="_blank" class="btn btn-swagger">
+                    <i data-lucide="terminal"></i>
+                    <span>Swagger API</span>
+                </a>
+                <div id="connection-badge" class="badge badge-connecting">
+                    <span class="badge-dot"></span>
+                    <span id="badge-text">Connecting...</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Dashboard -->
+        <main class="app-main">
+            <!-- Left Panel: Create Task Form -->
+            <section class="panel panel-form animate-slide-up" style="animation-delay: 0.1s;">
+                <div class="panel-header">
+                    <i data-lucide="plus-circle" class="icon-accent"></i>
+                    <h2>Create New Task</h2>
+                </div>
+                
+                <form id="todo-form" class="todo-form">
+                    <div class="form-group">
+                        <label for="task-title">What needs to be done?</label>
+                        <div class="input-wrapper">
+                            <i data-lucide="edit-3" class="input-icon"></i>
+                            <input type="text" id="task-title" placeholder="e.g., Configure production database" required autocomplete="off">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group row">
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="task-completed">
+                            <span class="checkmark"></span>
+                            <span>Mark as completed immediately</span>
+                        </label>
+                    </div>
+                    
+                    <button type="submit" id="submit-btn" class="btn btn-primary btn-block">
+                        <i data-lucide="save"></i>
+                        <span>Add Task</span>
+                        <div class="spinner hidden" id="form-spinner"></div>
+                    </button>
+                </form>
+            </section>
+
+            <!-- Right Panel: Tasks List -->
+            <section class="panel panel-list animate-slide-up" style="animation-delay: 0.2s;">
+                <div class="panel-header-row">
+                    <div class="panel-header">
+                        <i data-lucide="list-todo" class="icon-accent"></i>
+                        <h2>Task List</h2>
+                        <span class="counter-badge" id="task-count">0</span>
+                    </div>
+                    
+                    <!-- Filters -->
+                    <div class="filter-group">
+                        <button class="filter-btn active" data-filter="all">All</button>
+                        <button class="filter-btn" data-filter="active">Active</button>
+                        <button class="filter-btn" data-filter="completed">Completed</button>
+                    </div>
+                </div>
+
+                <!-- Error Alert Banner -->
+                <div id="db-error-alert" class="alert alert-danger hidden">
+                    <i data-lucide="alert-triangle"></i>
+                    <div class="alert-content">
+                        <strong>Database connection failed!</strong>
+                        <p>Your changes won't persist. Please check your MySQL connection settings in `appsettings.json` or Dokploy.</p>
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div id="empty-state" class="empty-state hidden">
+                    <div class="empty-icon">
+                        <i data-lucide="clipboard-list"></i>
+                    </div>
+                    <h3>No tasks found</h3>
+                    <p>Create a task to get started, or change your filter options.</p>
+                </div>
+
+                <!-- Loading State -->
+                <div id="loading-state" class="loading-state">
+                    <div class="spinner large"></div>
+                    <p>Fetching tasks from server...</p>
+                </div>
+
+                <!-- Task List container -->
+                <ul id="todo-list" class="todo-list">
+                    <!-- Loaded dynamically via JavaScript -->
+                </ul>
+            </section>
+        </main>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script src="app.js"></script>
+    <script>
+        // Initialize Lucide icons on load
+        document.addEventListener("DOMContentLoaded", () => {
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>

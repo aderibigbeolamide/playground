@@ -35,6 +35,10 @@ var app = builder.Build();
 // Must be called early to correct request properties (scheme/host) based on proxy headers
 app.UseForwardedHeaders();
 
+// Serve static files from wwwroot (enables monolithic SPA hosting)
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
 // Automatically create database and tables on startup if they don't exist
 using (var scope = app.Services.CreateScope())
 {
