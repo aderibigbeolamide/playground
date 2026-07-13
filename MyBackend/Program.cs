@@ -48,30 +48,7 @@ using (var scope = app.Services.CreateScope())
     {
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         db.Database.EnsureCreated();
-        
-        // Safety check for production environments: ensure the new tables are created if the database already existed
-        db.Database.ExecuteSqlRaw(@"
-            CREATE TABLE IF NOT EXISTS `Users` (
-                `Id` INT AUTO_INCREMENT PRIMARY KEY,
-                `Username` LONGTEXT NOT NULL,
-                `Email` VARCHAR(255) NOT NULL,
-                `PasswordHash` LONGTEXT NOT NULL,
-                `PasswordSalt` LONGTEXT NOT NULL,
-                `CreatedAt` DATETIME NOT NULL
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-        ");
-        
-        db.Database.ExecuteSqlRaw(@"
-            CREATE TABLE IF NOT EXISTS `UserSessions` (
-                `Id` INT AUTO_INCREMENT PRIMARY KEY,
-                `UserId` INT NOT NULL,
-                `Token` VARCHAR(255) NOT NULL,
-                `ExpiresAt` DATETIME NOT NULL,
-                `CreatedAt` DATETIME NOT NULL
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-        ");
-
-        app.Logger.LogInformation("Database initialization check passed (EnsureCreated + Table validation).");
+        app.Logger.LogInformation("Database initialization check passed (EnsureCreated).");
     }
     catch (Exception ex)
     {
