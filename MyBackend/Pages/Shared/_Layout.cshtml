@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] | StatsFlow Monolith</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="~/app.css" asp-append-version="true">
+</head>
+<body>
+    <div class="glass-bg"></div>
+    
+    <div class="app-container">
+        <!-- Header Section -->
+        <header class="app-header animate-fade-in">
+            <div class="header-logo">
+                <div class="logo-icon">
+                    <i data-lucide="trending-up"></i>
+                </div>
+                <div>
+                    <h1>StatsFlow</h1>
+                    <p class="subtitle">Monolithic cshtml Portal</p>
+                </div>
+            </div>
+            
+            <div class="header-actions">
+                <a href="/swagger/index.html" target="_blank" class="btn btn-swagger">
+                    <i data-lucide="terminal"></i>
+                    <span>Swagger API</span>
+                </a>
+                <div class="badge badge-connected">
+                    <span class="badge-dot"></span>
+                    <span>Monolith Connected</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Workspace -->
+        <main class="app-main">
+            @RenderBody()
+        </main>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="toast-container">
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="toast toast-success">
+                <i data-lucide="check-circle"></i>
+                <span>@TempData["SuccessMessage"]</span>
+            </div>
+        }
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="toast toast-error">
+                <i data-lucide="alert-circle"></i>
+                <span>@TempData["ErrorMessage"]</span>
+            </div>
+        }
+    </div>
+
+    @await RenderSectionAsync("Scripts", required: false)
+    
+    <script>
+        // Initialize Lucide icons on load
+        document.addEventListener("DOMContentLoaded", () => {
+            lucide.createIcons();
+            
+            // Auto-hide alerts and toast notifications
+            const toasts = document.querySelectorAll('.toast');
+            toasts.forEach(toast => {
+                setTimeout(() => {
+                    toast.style.animation = 'fade-in 0.3s ease reverse forwards';
+                    setTimeout(() => toast.remove(), 300);
+                }, 4000);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,156 @@
+@page
+@model MyBackend.Pages.IndexModel
+@{
+    ViewData["Title"] = "Sign In or Sign Up";
+    Layout = "_Layout";
+}
+
+<section id="auth-section" class="panel panel-auth animate-slide-up" style="animation-delay: 0.1s;">
+    <div class="auth-tabs">
+        <button id="tab-login" type="button" class="auth-tab-btn @(Model.ActiveTab == "login" ? "active" : "")">Sign In</button>
+        <button id="tab-signup" type="button" class="auth-tab-btn @(Model.ActiveTab == "signup" ? "active" : "")">Sign Up</button>
+    </div>
+
+    <!-- Global validation error messages -->
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger animate-slide-up">
+            <i data-lucide="alert-triangle"></i>
+            <div class="alert-content">
+                <strong>Please fix the errors:</strong>
+                <div asp-validation-summary="All"></div>
+            </div>
+        </div>
+    }
+
+    <!-- Login Form -->
+    <form id="login-form" method="post" asp-page-handler="Login" class="auth-form @(Model.ActiveTab == "login" ? "" : "hidden")">
+        <input type="hidden" name="ActiveTab" value="login" />
+        
+        <div class="panel-header">
+            <i data-lucide="lock" class="icon-accent"></i>
+            <h2>Sign In to StatsFlow</h2>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="LoginInput.Email">Email Address</label>
+            <div class="input-wrapper">
+                <i data-lucide="mail" class="input-icon"></i>
+                <input asp-for="LoginInput.Email" type="email" placeholder="you@example.com" required autocomplete="email">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="LoginInput.Password">Password</label>
+            <div class="input-wrapper">
+                <i data-lucide="key" class="input-icon"></i>
+                <input asp-for="LoginInput.Password" type="password" placeholder="••••••••" required autocomplete="current-password" id="login-password">
+                <button type="button" class="btn-toggle-password" data-target="login-password" aria-label="Toggle Password Visibility">
+                    <i data-lucide="eye"></i>
+                </button>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">
+            <span>Sign In</span>
+        </button>
+    </form>
+
+    <!-- Signup Form -->
+    <form id="signup-form" method="post" asp-page-handler="Register" class="auth-form @(Model.ActiveTab == "signup" ? "" : "hidden")">
+        <input type="hidden" name="ActiveTab" value="signup" />
+
+        <div class="panel-header">
+            <i data-lucide="user-plus" class="icon-accent"></i>
+            <h2>Create Your Account</h2>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="SignupInput.Username">Username</label>
+            <div class="input-wrapper">
+                <i data-lucide="user" class="input-icon"></i>
+                <input asp-for="SignupInput.Username" type="text" placeholder="johndoe" required autocomplete="username">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="SignupInput.Email">Email Address</label>
+            <div class="input-wrapper">
+                <i data-lucide="mail" class="input-icon"></i>
+                <input asp-for="SignupInput.Email" type="email" placeholder="you@example.com" required autocomplete="email">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="SignupInput.Password">Password</label>
+            <div class="input-wrapper">
+                <i data-lucide="key" class="input-icon"></i>
+                <input asp-for="SignupInput.Password" type="password" placeholder="Min. 6 characters" required autocomplete="new-password" id="signup-password">
+                <button type="button" class="btn-toggle-password" data-target="signup-password" aria-label="Toggle Password Visibility">
+                    <i data-lucide="eye"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="SignupInput.ConfirmPassword">Confirm Password</label>
+            <div class="input-wrapper">
+                <i data-lucide="shield-check" class="input-icon"></i>
+                <input asp-for="SignupInput.ConfirmPassword" type="password" placeholder="Repeat password" required autocomplete="new-password" id="signup-confirm-password">
+                <button type="button" class="btn-toggle-password" data-target="signup-confirm-password" aria-label="Toggle Password Visibility">
+                    <i data-lucide="eye"></i>
+                </button>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">
+            <span>Sign Up</span>
+        </button>
+    </form>
+</section>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabLogin = document.getElementById('tab-login');
+            const tabSignup = document.getElementById('tab-signup');
+            const loginForm = document.getElementById('login-form');
+            const signupForm = document.getElementById('signup-form');
+
+            // Handle tab switching client-side
+            tabLogin.addEventListener('click', () => {
+                tabLogin.classList.add('active');
+                tabSignup.classList.remove('active');
+                loginForm.classList.remove('hidden');
+                signupForm.classList.add('hidden');
+            });
+
+            tabSignup.addEventListener('click', () => {
+                tabSignup.classList.add('active');
+                tabLogin.classList.remove('active');
+                signupForm.classList.remove('hidden');
+                loginForm.classList.add('hidden');
+            });
+
+            // Password toggles click handlers
+            const toggles = document.querySelectorAll('.btn-toggle-password');
+            toggles.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = btn.getAttribute('data-target');
+                    const input = document.getElementById(targetId);
+                    const icon = btn.querySelector('i, svg');
+                    
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        icon.setAttribute('data-lucide', 'eye-off');
+                    } else {
+                        input.type = 'password';
+                        icon.setAttribute('data-lucide', 'eye');
+                    }
+                    lucide.createIcons();
+                });
+            });
+        });
+    </script>
+}

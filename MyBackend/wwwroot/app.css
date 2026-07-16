@@ -1074,3 +1074,27 @@ body {
     font-family: 'Outfit', sans-serif;
 }
 
+/* Razor validation summary formatting */
+.alert-danger ul {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 6px;
+    font-size: 13px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.alert-danger li {
+    position: relative;
+    padding-left: 14px;
+    color: #fca5a5;
+}
+
+.alert-danger li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: var(--danger);
+}
+

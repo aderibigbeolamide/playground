@@ -1,12 +1,24 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using MyBackend.Data;
+using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddOpenApi();
-builder.Services.AddControllers(); // Enable controllers
+builder.Services.AddControllers(); // Maintain API controllers if required
+builder.Services.AddRazorPages();  // Register Razor Pages monolithic support
+
+// Register Cookie Authentication services
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/"; // Our Index Razor Page serves as the login screen
+        options.ExpireTimeSpan = TimeSpan.FromDays(7);
+        options.SlidingExpiration = true;
+    });
 
 // Configure Forwarded Headers to respect reverse proxy headers (like Traefik in Dokploy)
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
@@ -21,7 +33,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 30))));
 
-// Configure CORS to allow access from local and external clients
+// Configure CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -34,11 +46,10 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// Must be called early to correct request properties (scheme/host) based on proxy headers
+// Respect proxy headers
 app.UseForwardedHeaders();
 
-// Serve static files from wwwroot (enables monolithic SPA hosting)
-app.UseDefaultFiles();
+// Serve static assets from wwwroot (like app.css)
 app.UseStaticFiles();
 
 // Automatically create database and tables on startup if they don't exist
@@ -61,13 +72,18 @@ app.MapOpenApi();
 app.UseSwaggerUI(options =>
 {
     options.SwaggerEndpoint("/openapi/v1.json", "My API v1");
-    options.RoutePrefix = "swagger"; // Swagger UI will be at /swagger/index.html
+    options.RoutePrefix = "swagger";
 });
 
 // Enable CORS policy
 app.UseCors("AllowAll");
 
-// Map all Controllers
+// Monolithic session protection middlewares
+app.UseAuthentication();
+app.UseAuthorization();
+
+// Map routing endpoints
 app.MapControllers();
+app.MapRazorPages(); // Direct matching for *.cshtml routes
 
 app.Run();
