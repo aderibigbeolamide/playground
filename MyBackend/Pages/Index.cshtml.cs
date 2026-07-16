@@ -43,7 +43,26 @@ namespace MyBackend.Pages
 
         public async Task<IActionResult> OnPostLoginAsync()
         {
+            Console.WriteLine("--> [DEBUG] OnPostLoginAsync called!");
             ActiveTab = "login";
+            
+            // Log current keys present in ModelState
+            foreach (var key in ModelState.Keys)
+            {
+                Console.WriteLine($"    Key: '{key}', Error count: {ModelState[key]?.Errors.Count}");
+            }
+            
+            // Clear registration validation errors (both prefixed and flat fallback keys), since only login was posted
+            var keysToRemove = new List<string>
+            {
+                "Username", "Email", "Password", "ConfirmPassword",
+                "SignupInput.Username", "SignupInput.Email", "SignupInput.Password", "SignupInput.ConfirmPassword"
+            };
+            foreach (var key in keysToRemove)
+            {
+                ModelState.Remove(key);
+            }
+
             if (!ModelState.IsValid)
             {
                 return Page();
@@ -93,7 +112,26 @@ namespace MyBackend.Pages
 
         public async Task<IActionResult> OnPostRegisterAsync()
         {
+            Console.WriteLine("--> [DEBUG] OnPostRegisterAsync called!");
             ActiveTab = "signup";
+            
+            // Log current keys present in ModelState
+            foreach (var key in ModelState.Keys)
+            {
+                Console.WriteLine($"    Key: '{key}', Error count: {ModelState[key]?.Errors.Count}");
+            }
+            
+            // Clear login validation errors (both prefixed and flat fallback keys), since only register was posted
+            var keysToRemove = new List<string>
+            {
+                "Email", "Password",
+                "LoginInput.Email", "LoginInput.Password"
+            };
+            foreach (var key in keysToRemove)
+            {
+                ModelState.Remove(key);
+            }
+
             if (!ModelState.IsValid)
             {
                 return Page();
