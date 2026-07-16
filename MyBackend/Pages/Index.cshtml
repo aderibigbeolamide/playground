@@ -112,6 +112,11 @@
 @section Scripts {
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Prevent "Confirm Form Resubmission" on browser refresh / back-navigation
+            if (window.history.replaceState) {
+                window.history.replaceState(null, null, window.location.pathname);
+            }
+
             const tabLogin = document.getElementById('tab-login');
             const tabSignup = document.getElementById('tab-signup');
             const loginForm = document.getElementById('login-form');
