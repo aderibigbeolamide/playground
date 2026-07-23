@@ -52,7 +52,6 @@ namespace MyBackend.Pages
                 Console.WriteLine($"    Key: '{key}', Error count: {ModelState[key]?.Errors.Count}");
             }
             
-            // Clear registration validation errors (both prefixed and flat fallback keys), since only login was posted
             var keysToRemove = new List<string>
             {
                 "Username", "Email", "Password", "ConfirmPassword",
@@ -76,7 +75,6 @@ namespace MyBackend.Pages
                 return Page();
             }
 
-            // Create DB session log for statistics
             var token = Guid.NewGuid().ToString("N") + Guid.NewGuid().ToString("N");
             var session = new UserSession
             {
@@ -115,13 +113,11 @@ namespace MyBackend.Pages
             Console.WriteLine("--> [DEBUG] OnPostRegisterAsync called!");
             ActiveTab = "signup";
             
-            // Log current keys present in ModelState
             foreach (var key in ModelState.Keys)
             {
                 Console.WriteLine($"    Key: '{key}', Error count: {ModelState[key]?.Errors.Count}");
             }
             
-            // Clear login validation errors (both prefixed and flat fallback keys), since only register was posted
             var keysToRemove = new List<string>
             {
                 "Email", "Password",
@@ -164,7 +160,6 @@ namespace MyBackend.Pages
             _dbContext.Users.Add(user);
             await _dbContext.SaveChangesAsync();
 
-            // Create DB session log for statistics
             var token = Guid.NewGuid().ToString("N") + Guid.NewGuid().ToString("N");
             var session = new UserSession
             {

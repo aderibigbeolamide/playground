@@ -8,19 +8,17 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddOpenApi();
-builder.Services.AddControllers(); // Maintain API controllers if required
-builder.Services.AddRazorPages();  // Register Razor Pages monolithic support
+builder.Services.AddControllers(); 
+builder.Services.AddRazorPages();  
 
-// Register Cookie Authentication services
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
-        options.LoginPath = "/"; // Our Index Razor Page serves as the login screen
+        options.LoginPath = "/"; 
         options.ExpireTimeSpan = TimeSpan.FromDays(7);
         options.SlidingExpiration = true;
     });
 
-// Configure Forwarded Headers to respect reverse proxy headers (like Traefik in Dokploy)
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
     options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
@@ -28,10 +26,9 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
     options.KnownProxies.Clear();
 });
 
-// Configure MySQL database connection using Pomelo EF Core
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 30))));
+    options.UseSqlServer(connectionString));
 
 // Configure CORS
 builder.Services.AddCors(options =>
@@ -46,13 +43,10 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// Respect proxy headers
 app.UseForwardedHeaders();
 
-// Serve static assets from wwwroot (like app.css)
 app.UseStaticFiles();
 
-// Automatically create database and tables on startup if they don't exist
 using (var scope = app.Services.CreateScope())
 {
     try
@@ -67,7 +61,6 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-// Configure Swagger API documentation routing
 app.MapOpenApi();
 app.UseSwaggerUI(options =>
 {
@@ -75,15 +68,12 @@ app.UseSwaggerUI(options =>
     options.RoutePrefix = "swagger";
 });
 
-// Enable CORS policy
 app.UseCors("AllowAll");
 
-// Monolithic session protection middlewares
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Map routing endpoints
 app.MapControllers();
-app.MapRazorPages(); // Direct matching for *.cshtml routes
+app.MapRazorPages(); 
 
 app.Run();

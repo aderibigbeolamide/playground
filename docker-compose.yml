@@ -1,16 +1,14 @@
 services:
   db:
-    image: mysql:8.0
+    image: mcr.microsoft.com/mssql/server:2022-latest
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: todo_db
-      MYSQL_USER: app_user
-      MYSQL_PASSWORD: apppassword
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=YourStrongPassword123!
     ports:
-      - "3306:3306"
+      - "1433:1433"
     volumes:
-      - mysql_data:/var/lib/mysql
+      - mssql_data:/var/opt/mssql
 
   backend:
     build:
@@ -20,10 +18,10 @@ services:
     ports:
       - "5234:5234"
     environment:
-      - ConnectionStrings__DefaultConnection=Server=db;Database=todo_db;User=app_user;Password=apppassword;
+      - ConnectionStrings__DefaultConnection=Server=db,1433;Database=todo_db;User Id=sa;Password=YourStrongPassword123!;TrustServerCertificate=True;
       - ASPNETCORE_ENVIRONMENT=Development
     depends_on:
       - db
 
 volumes:
-  mysql_data:
+  mssql_data:
