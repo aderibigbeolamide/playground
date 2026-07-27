@@ -52,8 +52,8 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        db.Database.EnsureCreated();
-        app.Logger.LogInformation("Database initialization check passed (EnsureCreated).");
+        db.Database.Migrate();
+        app.Logger.LogInformation("Database migrations applied successfully.");
 
         if (!db.Users.Any(u => u.Role == "Admin"))
         {
