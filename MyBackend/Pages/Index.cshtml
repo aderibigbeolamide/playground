@@ -1,161 +1,60 @@
 @page
 @model MyBackend.Pages.IndexModel
 @{
-    ViewData["Title"] = "Sign In or Sign Up";
+    ViewData["Title"] = "Latest Blogs";
     Layout = "_Layout";
 }
 
-<section id="auth-section" class="panel panel-auth animate-slide-up" style="animation-delay: 0.1s;">
-    <div class="auth-tabs">
-        <button id="tab-login" type="button" class="auth-tab-btn @(Model.ActiveTab == "login" ? "active" : "")">Sign In</button>
-        <button id="tab-signup" type="button" class="auth-tab-btn @(Model.ActiveTab == "signup" ? "active" : "")">Sign Up</button>
-    </div>
-
-    <!-- Global validation error messages -->
-    @if (!ViewData.ModelState.IsValid)
+<div class="hero-section animate-fade-in">
+    <h2>Welcome to TechBlog</h2>
+    <p class="subtitle">Read the latest insights and stories from our community.</p>
+    
+    @if (User.Identity?.IsAuthenticated != true)
     {
-        <div class="alert alert-danger animate-slide-up">
-            <i data-lucide="alert-triangle"></i>
-            <div class="alert-content">
-                <strong>Please fix the errors:</strong>
-                <div asp-validation-summary="All"></div>
-            </div>
+        <div class="hero-actions" style="margin-top: 2rem;">
+            <a href="/Auth" class="btn btn-primary">Join the Community</a>
         </div>
     }
+</div>
 
-    <!-- Login Form -->
-    <form id="login-form" method="post" asp-page-handler="Login" class="auth-form @(Model.ActiveTab == "login" ? "" : "hidden")">
-        <input type="hidden" name="ActiveTab" value="login" />
-        
-        <div class="panel-header">
-            <i data-lucide="lock" class="icon-accent"></i>
-            <h2>Sign In to StatsFlow</h2>
-        </div>
-
-        <div class="form-group">
-            <label asp-for="LoginInput.Email">Email Address</label>
-            <div class="input-wrapper">
-                <i data-lucide="mail" class="input-icon"></i>
-                <input asp-for="LoginInput.Email" type="email" placeholder="you@example.com" required autocomplete="email">
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label asp-for="LoginInput.Password">Password</label>
-            <div class="input-wrapper">
-                <i data-lucide="key" class="input-icon"></i>
-                <input asp-for="LoginInput.Password" type="password" placeholder="••••••••" required autocomplete="current-password" id="login-password">
-                <button type="button" class="btn-toggle-password" data-target="login-password" aria-label="Toggle Password Visibility">
-                    <i data-lucide="eye"></i>
-                </button>
-            </div>
-        </div>
-
-        <button type="submit" class="btn btn-primary btn-block">
-            <span>Sign In</span>
-        </button>
-    </form>
-
-    <!-- Signup Form -->
-    <form id="signup-form" method="post" asp-page-handler="Register" class="auth-form @(Model.ActiveTab == "signup" ? "" : "hidden")">
-        <input type="hidden" name="ActiveTab" value="signup" />
-
-        <div class="panel-header">
-            <i data-lucide="user-plus" class="icon-accent"></i>
-            <h2>Create Your Account</h2>
-        </div>
-
-        <div class="form-group">
-            <label asp-for="SignupInput.Username">Username</label>
-            <div class="input-wrapper">
-                <i data-lucide="user" class="input-icon"></i>
-                <input asp-for="SignupInput.Username" type="text" placeholder="johndoe" required autocomplete="username">
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label asp-for="SignupInput.Email">Email Address</label>
-            <div class="input-wrapper">
-                <i data-lucide="mail" class="input-icon"></i>
-                <input asp-for="SignupInput.Email" type="email" placeholder="you@example.com" required autocomplete="email">
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label asp-for="SignupInput.Password">Password</label>
-            <div class="input-wrapper">
-                <i data-lucide="key" class="input-icon"></i>
-                <input asp-for="SignupInput.Password" type="password" placeholder="Min. 6 characters" required autocomplete="new-password" id="signup-password">
-                <button type="button" class="btn-toggle-password" data-target="signup-password" aria-label="Toggle Password Visibility">
-                    <i data-lucide="eye"></i>
-                </button>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label asp-for="SignupInput.ConfirmPassword">Confirm Password</label>
-            <div class="input-wrapper">
-                <i data-lucide="shield-check" class="input-icon"></i>
-                <input asp-for="SignupInput.ConfirmPassword" type="password" placeholder="Repeat password" required autocomplete="new-password" id="signup-confirm-password">
-                <button type="button" class="btn-toggle-password" data-target="signup-confirm-password" aria-label="Toggle Password Visibility">
-                    <i data-lucide="eye"></i>
-                </button>
-            </div>
-        </div>
-
-        <button type="submit" class="btn btn-primary btn-block">
-            <span>Sign Up</span>
-        </button>
-    </form>
-</section>
-
-@section Scripts {
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Prevent "Confirm Form Resubmission" on browser refresh / back-navigation
-            if (window.history.replaceState) {
-                window.history.replaceState(null, null, window.location.pathname);
-            }
-
-            const tabLogin = document.getElementById('tab-login');
-            const tabSignup = document.getElementById('tab-signup');
-            const loginForm = document.getElementById('login-form');
-            const signupForm = document.getElementById('signup-form');
-
-            // Handle tab switching client-side
-            tabLogin.addEventListener('click', () => {
-                tabLogin.classList.add('active');
-                tabSignup.classList.remove('active');
-                loginForm.classList.remove('hidden');
-                signupForm.classList.add('hidden');
-            });
-
-            tabSignup.addEventListener('click', () => {
-                tabSignup.classList.add('active');
-                tabLogin.classList.remove('active');
-                signupForm.classList.remove('hidden');
-                loginForm.classList.add('hidden');
-            });
-
-            // Password toggles click handlers
-            const toggles = document.querySelectorAll('.btn-toggle-password');
-            toggles.forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const targetId = btn.getAttribute('data-target');
-                    const input = document.getElementById(targetId);
-                    const icon = btn.querySelector('i, svg');
-                    
-                    if (input.type === 'password') {
-                        input.type = 'text';
-                        icon.setAttribute('data-lucide', 'eye-off');
-                    } else {
-                        input.type = 'password';
-                        icon.setAttribute('data-lucide', 'eye');
+<div class="blog-grid animate-slide-up" style="margin-top: 3rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2rem;">
+    @if (Model.Blogs.Any())
+    {
+        foreach (var blog in Model.Blogs)
+        {
+            <div class="panel blog-card" style="display: flex; flex-direction: column;">
+                <div class="panel-header" style="flex-direction: column; align-items: flex-start; gap: 0.5rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                    <h3 style="margin: 0; font-size: 1.25rem;">@blog.Title</h3>
+                    <div style="font-size: 0.85rem; color: #a0aec0; display: flex; align-items: center; gap: 0.5rem;">
+                        <i data-lucide="user" style="width: 14px; height: 14px;"></i> @blog.Author?.Username
+                        <span>&bull;</span>
+                        <i data-lucide="calendar" style="width: 14px; height: 14px;"></i> @blog.CreatedAt.ToString("MMM dd, yyyy")
+                    </div>
+                </div>
+                <div class="panel-body" style="flex: 1; margin-top: 1rem; color: #cbd5e1;">
+                    @if (blog.Content.Length > 150)
+                    {
+                        <p>@blog.Content.Substring(0, 150)...</p>
                     }
-                    lucide.createIcons();
-                });
-            });
-        });
-    </script>
-}
+                    else
+                    {
+                        <p>@blog.Content</p>
+                    }
+                </div>
+                <div style="margin-top: 1.5rem;">
+                    <a href="/Blog/Details?id=@blog.Id" class="btn btn-outline" style="width: 100%; justify-content: center;">Read More</a>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="panel" style="grid-column: 1 / -1; text-align: center; padding: 4rem 2rem;">
+            <div style="display: inline-block; padding: 1rem; background: rgba(56, 189, 248, 0.1); border-radius: 50%; color: #38bdf8; margin-bottom: 1rem;">
+                <i data-lucide="book-open" style="width: 32px; height: 32px;"></i>
+            </div>
+            <h3>No blogs found</h3>
+            <p style="color: #94a3b8; margin-top: 0.5rem;">Be the first to share your thoughts!</p>
+        </div>
+    }
+</div>

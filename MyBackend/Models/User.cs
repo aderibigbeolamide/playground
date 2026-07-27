@@ -9,6 +9,9 @@ namespace MyBackend.Models
         public string Email { get; set; } = string.Empty;
         public string PasswordHash { get; set; } = string.Empty;
         public string PasswordSalt { get; set; } = string.Empty;
+        public string Role { get; set; } = "User"; // Admin or User
+        public bool IsApproved { get; set; } = false;
+        public bool IsActive { get; set; } = true;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }

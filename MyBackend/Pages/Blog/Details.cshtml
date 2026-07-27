@@ -1,0 +1,32 @@
+@page
+@model MyBackend.Pages.Blog.DetailsModel
+@{
+    ViewData["Title"] = Model.Blog.Title;
+    Layout = "_Layout";
+}
+
+<div class="panel animate-slide-up" style="max-width: 900px; margin: 2rem auto; padding: 3rem;">
+    <div style="margin-bottom: 2rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 2rem;">
+        <h1 style="margin: 0 0 1rem 0; font-size: 2.5rem; color: #f8fafc;">@Model.Blog.Title</h1>
+        <div style="display: flex; gap: 1rem; color: #94a3b8; font-size: 0.9rem; align-items: center;">
+            <span style="display: flex; align-items: center; gap: 0.5rem;"><i data-lucide="user" style="width: 16px; height: 16px;"></i> @Model.Blog.Author?.Username</span>
+            <span>&bull;</span>
+            <span style="display: flex; align-items: center; gap: 0.5rem;"><i data-lucide="calendar" style="width: 16px; height: 16px;"></i> @Model.Blog.CreatedAt.ToString("MMMM dd, yyyy")</span>
+            @if (Model.Blog.CreatedAt != Model.Blog.UpdatedAt)
+            {
+                <span>&bull;</span>
+                <span style="display: flex; align-items: center; gap: 0.5rem; color: #64748b;">(Updated: @Model.Blog.UpdatedAt.ToString("MMM dd"))</span>
+            }
+        </div>
+    </div>
+
+    <div class="blog-content" style="color: #e2e8f0; line-height: 1.8; font-size: 1.1rem; white-space: pre-wrap;">
+        @Model.Blog.Content
+    </div>
+
+    <div style="margin-top: 4rem; text-align: center;">
+        <a href="/" class="btn btn-outline">
+            <i data-lucide="arrow-left"></i> Back to Blogs
+        </a>
+    </div>
+</div>

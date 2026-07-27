@@ -19,25 +19,31 @@
     <div class="app-container">
         <!-- Header Section -->
         <header class="app-header animate-fade-in">
-            <div class="header-logo">
+            <a href="/" class="header-logo" style="text-decoration: none; color: inherit;">
                 <div class="logo-icon">
-                    <i data-lucide="trending-up"></i>
+                    <i data-lucide="book-open"></i>
                 </div>
                 <div>
-                    <h1>StatsFlow</h1>
-                    <p class="subtitle">Monolithic cshtml Portal</p>
+                    <h1>TechBlog</h1>
+                    <p class="subtitle">Community Insights & Stories</p>
                 </div>
-            </div>
+            </a>
             
             <div class="header-actions">
-                <a href="/swagger/index.html" target="_blank" class="btn btn-swagger">
-                    <i data-lucide="terminal"></i>
-                    <span>Swagger API</span>
-                </a>
-                <div class="badge badge-connected">
-                    <span class="badge-dot"></span>
-                    <span>Monolith Connected</span>
-                </div>
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <a href="/Dashboard" class="btn btn-primary" style="display: flex; align-items: center; gap: 0.5rem;">
+                        <i data-lucide="layout-dashboard"></i>
+                        <span>Dashboard</span>
+                    </a>
+                }
+                else
+                {
+                    <a href="/Auth" class="btn btn-outline" style="display: flex; align-items: center; gap: 0.5rem;">
+                        <i data-lucide="log-in"></i>
+                        <span>Sign In</span>
+                    </a>
+                }
             </div>
         </header>
 

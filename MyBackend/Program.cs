@@ -54,10 +54,27 @@ using (var scope = app.Services.CreateScope())
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         db.Database.EnsureCreated();
         app.Logger.LogInformation("Database initialization check passed (EnsureCreated).");
+
+        if (!db.Users.Any(u => u.Role == "Admin"))
+        {
+            var (hash, salt) = MyBackend.Services.PasswordHasher.HashPassword("Admin123!");
+            db.Users.Add(new MyBackend.Models.User
+            {
+                Username = "Admin",
+                Email = "admin@example.com",
+                PasswordHash = hash,
+                PasswordSalt = salt,
+                Role = "Admin",
+                IsApproved = true,
+                IsActive = true
+            });
+            db.SaveChanges();
+            app.Logger.LogInformation("Seeded default admin user.");
+        }
     }
     catch (Exception ex)
     {
-        app.Logger.LogError(ex, "An error occurred while initializing the database. Ensure MySQL is running and your connection string in appsettings.json is correct.");
+        app.Logger.LogError(ex, "An error occurred while initializing the database.");
     }
 }
 

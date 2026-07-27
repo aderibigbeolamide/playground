@@ -1,0 +1,32 @@
+@page
+@model MyBackend.Pages.Blog.CreateEditModel
+@{
+    ViewData["Title"] = Model.Blog.Id == 0 ? "Create Blog" : "Edit Blog";
+    Layout = "_Layout";
+}
+
+<div class="panel animate-slide-up" style="max-width: 800px; margin: 2rem auto; padding: 2rem;">
+    <div class="panel-header" style="margin-bottom: 2rem;">
+        <i data-lucide="edit-3" class="icon-accent"></i>
+        <h2>@(Model.Blog.Id == 0 ? "Create New Blog" : "Edit Blog")</h2>
+    </div>
+
+    <form method="post">
+        <input type="hidden" asp-for="Blog.Id" />
+        
+        <div class="form-group" style="margin-bottom: 1.5rem;">
+            <label asp-for="Blog.Title" style="display: block; margin-bottom: 0.5rem; color: #94a3b8;">Title</label>
+            <input asp-for="Blog.Title" type="text" style="width: 100%; padding: 0.75rem; background: rgba(15,23,42,0.6); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 1rem;" required />
+        </div>
+
+        <div class="form-group" style="margin-bottom: 2rem;">
+            <label asp-for="Blog.Content" style="display: block; margin-bottom: 0.5rem; color: #94a3b8;">Content</label>
+            <textarea asp-for="Blog.Content" rows="12" style="width: 100%; padding: 0.75rem; background: rgba(15,23,42,0.6); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 1rem; resize: vertical;" required></textarea>
+        </div>
+
+        <div style="display: flex; gap: 1rem; justify-content: flex-end; align-items: center;">
+            <a href="/Dashboard" style="color: #94a3b8; text-decoration: none; padding: 0.75rem 1.5rem; font-size: 0.875rem; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Cancel</a>
+            <button type="submit" class="btn btn-primary">Save Blog</button>
+        </div>
+    </form>
+</div>

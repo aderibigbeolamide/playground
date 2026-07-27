@@ -224,6 +224,7 @@ body {
     font-weight: 600;
     cursor: pointer;
     border: 1px solid transparent;
+    text-decoration: none;
     transition: var(--transition);
 }
 
@@ -239,15 +240,16 @@ body {
     transform: translateY(-1px);
 }
 
-.btn-swagger {
+.btn-outline {
     background: rgba(255, 255, 255, 0.05);
     color: var(--text-primary);
     border-color: var(--border-color);
 }
 
-.btn-swagger:hover {
+.btn-outline:hover {
     background: rgba(255, 255, 255, 0.1);
-    border-color: var(--primary);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #fff;
 }
 
 .btn-block {
